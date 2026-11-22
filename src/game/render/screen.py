@@ -22,8 +22,9 @@ class Screen:
         body = []
         for row in range(rows):
             text = lines[row] if row < len(lines) else ""
-            body.append("|" + text[:inner].ljust(inner) + "|")
-        border = "+" + ("-" * inner) + "+"
-        picture = "\n".join([border, *body, border])
+            body.append("│" + text[:inner].ljust(inner) + "│")
+        top = "╭" + ("─" * inner) + "╮"
+        bottom = "╰" + ("─" * inner) + "╯"
+        picture = "\n".join([top, *body, bottom])
         self.shown.append(picture)
         return picture

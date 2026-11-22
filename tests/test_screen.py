@@ -12,12 +12,12 @@ def test_screen_draws_a_bordered_frame() -> None:
     inner = " " * 22
     assert picture == "\n".join(
         [
-            "+" + "-" * 22 + "+",
-            "|Play" + " " * 18 + "|",
-            "|player @ (1, 1)" + " " * 7 + "|",
-            "|" + inner + "|",
-            "|" + inner + "|",
-            "+" + "-" * 22 + "+",
+            "╭" + "─" * 22 + "╮",
+            "│Play" + " " * 18 + "│",
+            "│player @ (1, 1)" + " " * 7 + "│",
+            "│" + inner + "│",
+            "│" + inner + "│",
+            "╰" + "─" * 22 + "╯",
         ]
     )
     assert screen.shown == [picture]
@@ -30,9 +30,9 @@ def test_screen_clips_a_line_that_does_not_fit() -> None:
 
     assert picture == "\n".join(
         [
-            "+" + "-" * 6 + "+",
-            "|player|",
-            "+" + "-" * 6 + "+",
+            "╭" + "─" * 6 + "╮",
+            "│player│",
+            "╰" + "─" * 6 + "╯",
         ]
     )
 

@@ -1,13 +1,15 @@
 from game.input import Command, ScriptedInput, parse_command
 
 
-def test_parse_command_accepts_the_six_actions() -> None:
+def test_parse_command_accepts_the_actions() -> None:
     assert parse_command("start") is Command.START
     assert parse_command("QUIT") is Command.QUIT
     assert parse_command(" up ") is Command.UP
     assert parse_command("down") is Command.DOWN
     assert parse_command("left") is Command.LEFT
     assert parse_command("right") is Command.RIGHT
+    assert parse_command("pause") is Command.PAUSE
+    assert parse_command("restart") is Command.RESTART
 
 
 def test_parse_command_rejects_unknown_text() -> None:

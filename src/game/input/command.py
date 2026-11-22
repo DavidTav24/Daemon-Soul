@@ -14,6 +14,8 @@ class Command(Enum):
     DOWN = "down"
     LEFT = "left"
     RIGHT = "right"
+    PAUSE = "pause"
+    RESTART = "restart"
 
 
 def parse_command(text: str) -> Command | None:

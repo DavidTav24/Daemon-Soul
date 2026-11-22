@@ -1,11 +1,14 @@
-"""Show a few play frames on the text screen."""
+"""Play the game in the terminal, or show the short demo."""
 
 from __future__ import annotations
+
+import sys
 
 from game.input.command import Command
 from game.render.renderer import FrameRenderer
 from game.render.screen import Screen
 from game.scenes.play import PlayScene
+from game.session import run_game
 
 
 def play_demo(screen: Screen | None = None) -> list[str]:
@@ -35,11 +38,13 @@ def play_demo(screen: Screen | None = None) -> list[str]:
 
 
 def main() -> int:
-    """Print the demo screen."""
-    for picture in play_demo():
-        print(picture)
-        print()
-    return 0
+    """Play when a keyboard is attached. Otherwise print the demo."""
+    if not sys.stdin.isatty():
+        for picture in play_demo():
+            print(picture)
+            print()
+        return 0
+    return run_game()
 
 
 if __name__ == "__main__":

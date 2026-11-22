@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ashgate</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #14110e;
+      color: #f3e6d0;
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+    }
+    main {
+      max-width: 52rem;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+    h1 { font-weight: 600; letter-spacing: 0.08em; margin-bottom: 0.25rem; }
+    p { margin-top: 0; }
+    pre {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 15px;
+      line-height: 1.15;
+      white-space: pre;
+      overflow-x: auto;
+      background: #1c1814;
+      border-radius: 8px;
+      padding: 0.75rem;
+    }
+    #status { min-height: 1.2em; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>ASHGATE</h1>
+    <p id="status">Loading the gates…</p>
+    <pre id="frame" tabindex="0" aria-label="Ashgate game"></pre>
+  </main>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.27.0/full/pyodide.js"></script>
+  <script>
+    const FILES = [
+      "src/game/__init__.py",
+      "src/game/py.typed",
+      "src/game/environment.py",
+      "src/game/session.py",
+      "src/game/theme.py",
+      "src/game/entities/__init__.py",
+      "src/game/entities/entity.py",
+      "src/game/entities/player.py",
+      "src/game/entities/enemy.py",
+      "src/game/input/__init__.py",
+      "src/game/input/command.py",
+      "src/game/input/source.py",
+      "src/game/render/__init__.py",
+      "src/game/render/renderer.py",
+      "src/game/render/screen.py",
+      "src/game/scenes/__init__.py",
+      "src/game/scenes/play.py",
+      "src/game/scenes/start.py",
+      "src/game/scenes/game_over.py"
+    ];
+
+    const frame = document.querySelector("#frame");
+    const status = document.querySelector("#status");
+    const held = new Set();
+    const once = [];
+
+    const KEYS = {
+      ArrowLeft: "LEFT", ArrowRight: "RIGHT", ArrowUp: "UP",
+      KeyA: "LEFT", KeyD: "RIGHT", KeyW: "UP", Space: "UP",
+      KeyP: "PAUSE", KeyR: "RESTART", Enter: "START", KeyQ: "QUIT"
+    };
+    const CONTINUOUS = new Set(["LEFT", "RIGHT", "UP"]);
+
+    function onKey(event, down) {
+      const command = KEYS[event.code];
+      if (!command) return;
+      event.preventDefault();
+      if (CONTINUOUS.has(command)) {
+        if (down) held.add(command);
+        else held.delete(command);
+      } else if (down) {
+        once.push(command);
+      }
+    }
+    frame.addEventListener("keydown", (event) => onKey(event, true));
+    frame.addEventListener("keyup", (event) => onKey(event, false));
+    window.addEventListener("keydown", (event) => onKey(event, true));
+    window.addEventListener("keyup", (event) => onKey(event, false));
+
+    function ansiToHtml(text) {
+      const colors = { 17: "#00005f", 23: "#005f5f", 28: "#008700", 46: "#00ff00", 52: "#5f0000", 60: "#5f5f87", 94: "#875f00", 95: "#875f5f", 108: "#87af87", 111: "#87afff", 123: "#87ffff", 126: "#af0087", 131: "#af5f5f", 141: "#af87ff", 153: "#afd7ff", 159: "#afffff", 160: "#d70000", 166: "#d75f00", 172: "#d78700", 173: "#d7875f", 180: "#d7af87", 194: "#d7ffd7", 195: "#d7ffff", 203: "#ff5f5f", 214: "#ffaf00", 220: "#ffd700", 221: "#ffd75f", 223: "#ffd7af", 224: "#ffd7d7", 229: "#ffffaf", 230: "#ffffd7", 231: "#ffffff" };
+      let bold = false;
+      let color = "";
+      let html = "";
+      const parts = text.split(/\u001b\[/);
+      html += escapeText(parts[0]);
+      for (let i = 1; i < parts.length; i++) {
+        const end = parts[i].indexOf("m");
+        const code = end === -1 ? "" : parts[i].slice(0, end);
+        const body = end === -1 ? parts[i] : parts[i].slice(end + 1);
+        if (code === "0" || code === "") {
+          bold = false;
+          color = "";
+        } else {
+          bold = code.startsWith("1;");
+          const match = code.match(/38;5;(\d+)/);
+          color = match ? (colors[match[1]] || "") : "";
+        }
+        const style = (bold ? "font-weight:700;" : "") + (color ? "color:" + color + ";" : "");
+        html += style ? "<span style=\"" + style + "\">" + escapeText(body) + "</span>" : escapeText(body);
+      }
+      return html;
+    }
+
+    function escapeText(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    async function main() {
+      const pyodide = await loadPyodide();
+      pyodide.FS.mkdirTree("/ashgate/src/game/entities");
+      pyodide.FS.mkdirTree("/ashgate/src/game/input");
+      pyodide.FS.mkdirTree("/ashgate/src/game/render");
+      pyodide.FS.mkdirTree("/ashgate/src/game/scenes");
+      for (const path of FILES) {
+        const response = await fetch(path);
+        if (!response.ok) throw new Error("Missing " + path);
+        pyodide.FS.writeFile("/ashgate/" + path, await response.text());
+      }
+      pyodide.runPython(`
+import sys
+sys.path.insert(0, "/ashgate/src")
+from game.input.command import Command
+from game.render.renderer import FrameRenderer
+from game.render.screen import Screen
+from game.session import GameSession, _CONTROLS
+from game.theme import paint, paint_line, palette_for
+
+session = GameSession()
+renderer = FrameRenderer()
+screen = Screen(width=23, height=14)
+
+def tick(names):
+    if not session.running:
+        return False
+    commands = [Command[name] for name in names]
+    session.step(commands)
+    return session.running
+
+def draw():
+    renderer.clear()
+    session.render(renderer)
+    renderer.present()
+    picture = screen.show(renderer.frames[-1])
+    palette = palette_for(session.mode, session.level)
+    return "\\n\\n".join([
+        paint_line(session.status_line(), palette),
+        paint(picture, palette),
+        paint_line(_CONTROLS, palette),
+    ])
+`);
+      const tick = pyodide.globals.get("tick");
+      const draw = pyodide.globals.get("draw");
+      status.textContent = "Click the frame. A and D walk, W jumps, Enter begins.";
+      frame.focus();
+      frame.innerHTML = ansiToHtml(draw());
+      window.setInterval(() => {
+        const names = [...held, ...once];
+        once.length = 0;
+        const running = tick(names);
+        frame.innerHTML = ansiToHtml(draw());
+        if (!running) status.textContent = "You left the gate.";
+      }, 50);
+    }
+
+    main().catch((error) => {
+      status.textContent = "The gates did not load. " + error.message;
+    });
+  </script>
+</body>
+</html>

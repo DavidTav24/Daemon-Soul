@@ -42,9 +42,9 @@ Run the tests with:
 
 ## URL to open
 
-After GitHub Pages is enabled on the `main` branch and the `/` (root) folder, the game is:
+The game is published from the `main` branch, root folder:
 
-`https://<your-github-name>.github.io/<repo-name>/`
+https://davidtav24.github.io/ashgate/
 
 Use the root folder. The page loads `src/game` by a relative path. Choosing `/docs` as the Pages folder hides those files and the game cannot start.
 

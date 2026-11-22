@@ -135,6 +135,14 @@ class GameSession:
             self._begin_level(1, 0, PlayScene.starting_lives)
 
     def _begin_level(self, level: int, score: int, lives: int, shield: bool = False) -> None:
+        if level not in (1, 2, 3):
+            raise ValueError("unknown level")
+        if type(score) is not int or not 0 <= score <= 1_000_000:
+            raise ValueError("score is out of range")
+        if type(lives) is not int or not 0 <= lives <= PlayScene.starting_lives:
+            raise ValueError("lives are out of range")
+        if type(shield) is not bool:
+            raise ValueError("shield flag is invalid")
         scene = PlayScene(level=level)
         scene.score = score
         scene.lives = lives

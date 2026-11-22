@@ -1,0 +1,5 @@
+# The game itself uses the Python standard library only.
+# pytest runs the tests. It is not imported by the game.
+# 9.0.3 fixes PYSEC-2026-1845, and it requires Python 3.10.
+# This machine is Python 3.9, so the newest installable release is pinned here.
+pytest==8.4.2

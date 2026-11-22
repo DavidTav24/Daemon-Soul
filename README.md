@@ -88,4 +88,19 @@ Python is the game, not a side script. `PlayScene.update` moves the player one f
 
 ## AI tools
 
-The game was built in Cursor with Grok. The assistant wrote the Python, the tests, and this site from play notes. The collision rules, the pit, the shield, and the level layouts were changed after playing them. Notes from that work are in [docs/debugging.md](docs/debugging.md). The collision writeup is [docs/ai-challenge.md](docs/ai-challenge.md). The reflection is [docs/reflection.md](docs/reflection.md).
+The game was built in Cursor with Grok. The assistant wrote the Python, the tests, and this site from play notes. The collision rules, the pit, the shield, and the level layouts were changed after playing them. Notes from that work are in [docs/debugging.md](docs/debugging.md). The collision writeup is [docs/ai-challenge.md](docs/ai-challenge.md). The Part 1 reflection is [docs/reflection.md](docs/reflection.md).
+
+The Part 1 snapshot, taken before the security changes, is the git branch `part1-baseline`. A folder copy is `/Users/davidtavares/Projects/ashgate-part1-backup`.
+
+## Security review
+
+Part 2 reviewed this same game before changing it. The notes are:
+
+- [Baseline and diagram](docs/security/baseline.md)
+- [Findings table and scans](docs/security/findings.md)
+- [Vulnerability reports](docs/security/reports.md)
+- [Before and after](docs/security/before-after.md)
+- [Review journal](docs/security/journal.md)
+- [Security reflection](docs/security/reflection.md)
+
+The page escapes game text before inserting it, ignores unknown command names, hides raw exception text, and pins the Pyodide loader with a hash and a Content-Security-Policy. There is no server, database, cookie, or secret. pytest is a test tool only. Its known advisory cannot be patched on Python 3.9, and that limit is written down in [requirements.txt](requirements.txt).

@@ -1,4 +1,4 @@
-"""Ashgate's terminal colors. The level glyphs stay the same."""
+"""Daemon soul terminal colors. The level glyphs stay the same."""
 
 from __future__ import annotations
 
@@ -77,7 +77,7 @@ NIGHT = Palette(
     text=_pen(153),
 )
 GATE = Palette(
-    name="ASHGATE",
+    name="DAEMON SOUL",
     brick=_pen(180),
     hazard=_pen(131),
     pit=_pen(95),

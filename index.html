@@ -7,7 +7,7 @@
     http-equiv="Content-Security-Policy"
     content="default-src 'none'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval' 'wasm-unsafe-eval' blob:; style-src 'unsafe-inline'; connect-src 'self' https://cdn.jsdelivr.net data: blob:; img-src 'self' data:; worker-src 'self' blob:; child-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
   >
-  <title>Ashgate</title>
+  <title>Daemon soul</title>
   <style>
     :root { color-scheme: dark; }
     body {
@@ -24,24 +24,37 @@
     }
     h1 { font-weight: 600; letter-spacing: 0.08em; margin-bottom: 0.25rem; }
     p { margin-top: 0; }
-    pre {
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 15px;
-      line-height: 1.15;
-      white-space: pre;
-      overflow-x: auto;
-      background: #1c1814;
-      border-radius: 8px;
-      padding: 0.75rem;
+    #frame {
+      position: relative;
+      width: 462px;
+      height: 264px;
+      overflow: hidden;
+      border: 1px solid #c4b49a;
     }
-    #status { min-height: 1.2em; }
+    #frame .sky { position: absolute; inset: 0; display: block; }
+    #frame .grid { position: absolute; inset: 0; }
+    #frame .row { display: flex; height: 22px; }
+    #frame .tile { width: 22px; height: 22px; }
+    #frame .caption {
+      position: absolute;
+      top: 48px;
+      left: 36px;
+      margin: 0;
+      color: darkgreen;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      white-space: pre;
+      line-height: 22px;
+    }
+    #status { min-height: 1.2em; font-family: ui-monospace, Menlo, monospace; }
   </style>
 </head>
 <body>
   <main>
-    <h1>ASHGATE</h1>
+    <h1>Daemon soul</h1>
     <p id="status">Loading the gates…</p>
-    <pre id="frame" tabindex="0" aria-label="Ashgate game"></pre>
+    <div id="frame" tabindex="0" aria-label="Daemon soul"></div>
   </main>
   <script
     src="https://cdn.jsdelivr.net/pyodide/v0.27.0/full/pyodide.js"

@@ -1,23 +1,41 @@
 # Final reflection
 
-The handout's reflection questions were not stored in this project. These ten are the ones this writeup answers: the game I shipped, who made which decisions, the collision function, the bug that took longest, a fix the model got wrong, how I tested, what I still do not trust, what deployment changed, which AI tools I used, and what I would change next.
+## 1. How did using Cursor change the way you approached programming?
 
-I set out to make a side-view platformer I could play in a terminal. The shipped game is Ashgate: three gates, a key and a door on each, coins, pits, spikes, and, on the second gate, a shield. The meadow is the beginner gate, the kiln is the shield gate, and the night gate is the long one. That shape came from playing. The first builds were either too empty or so tight that one missed jump ended the run.
+I stopped trying to hold the whole program in my head before I typed. I described one behavior, ran it, and only then asked for the next one. On November 16 I had Cursor build one feature and stop. That was how I knew what had been added.
 
-I decided the rules. Cursor, using Grok, wrote almost all of the Python, the tests, and the browser page. My part was to play each build, reject the ones that felt wrong, and read the function I would have to explain. I did not treat a green test run as proof that a jump was fair. The terminal is where that showed up.
+## 2. Which prompts produced the most useful results?
 
-The collision function I understand is `Environment.is_open`. It takes a world position and whether the door is unlocked, converts that position to one tile, and returns whether the player may stand there. Bricks and a locked door are closed. Everything else is open, including hazards, so a later check can see the overlap. The function itself changes no state. `PlayScene.update` does: it puts back a blocked step, stops a fall on the first solid tile, and on a real hit either spends the shield or restarts the life.
+The useful prompts named a bad feeling I had just played. "Have the player die to the pitfall if he falls in it not touch it." "fix the air momentum so that the player can do an arc if they jump while moving." "have the movement control be able to work when inputted at the same time when it comes to jumping and moving." Each one pointed at a single frame.
 
-The bug that took longest was the pit. Touching the lip killed me, including a brush that should have been recoverable. The fix was to kill only after falling onto the tile below the `v`, and only while moving down. From the lip I can still step back. That rule is easy to get backward, which is why a test stands on the lip for one frame and expects me to live.
+## 3. Which prompts produced poor or incorrect results?
 
-One generated "fix" was a second path made of bricks low over the pits. It looked like a bridge and made the ground route impossible, because a jump rises through those tiles and `is_open` correctly called them solid. A search of the level never finished. I removed that ceiling. The upper route is now separate platforms with room to jump, and the ground route is still open.
+The wide prompts did. "Make the level a bit more complex" and "add a path" both came back as more bricks. Bricks are solid. The new bricks blocked a jump I already needed. A step glued to the key ledge was jumped over. A step on the takeoff column was hit from the side.
 
-I tested with pytest, about seventy tests, and by playing `python -m game` in a real terminal. The tests lock the lip, the jump off a platform edge, the shield, and that each level can be completed. They cannot tell me that a jump feels tight. Holding jump and move at once was one of those feelings: the code jumped only after the sideways step, so the last tile walked off the edge. Takeoff is now decided from the tile I was already on.
+## 4. How did you determine whether AI-generated code was correct?
 
-I still do not trust two assumptions. Horizontal motion checks the destination tile, not every tile crossed, so a fast step could skip a spike. And `int()` cuts toward zero, so negative coordinates are not a mirror of positive ones. I know those limits because I read the function, not because a test failed.
+I did not treat a passing test as proof. Pytest told me a function returned the value I asked for. It did not tell me a jump was fair. I ran `python -m game` in a real terminal after movement changes. On November 22 I opened the browser, pressed Enter, held D until the drawn character picked up a coin, and jumped. When a level search ran forever, I treated that as a closed path.
 
-Local play and the Pages build are the same `GameSession`, but the keyboard is not. The terminal uses key press and release. The browser holds a set of keys and steps the session on a timer. The page loads `src/game` by relative paths. Publishing from the `/docs` folder would break that, because the Python would no longer sit next to `index.html`.
+## 5. Describe a significant bug and how you diagnosed it.
 
-The AI tool was Cursor, with Grok writing the code I then played and edited. I kept `docs/debugging.md` so a later change would not undo the pit, the shield, or the jump. I would not ask the model to "add a path" again without saying which tiles the ground jump needs empty.
+The pit lasted the longest. I wanted the edge safe and the hole deadly. Touching the lip killed me. I asked for a lower hitbox, and the first result was still too harsh, so I said it again. The rule that stayed: I die only if I am on the tile under the `v` and I am moving down. From the lip I can step back. A test stands on that lip for one frame and expects me to live.
 
-Next time I would write the collision tests before adding a level, and I would keep one level boring until the controls felt right. The night gate's spacing changed several times because I was still learning the jump while I was designing it.
+## 6. Which parts of the program do you understand most confidently?
+
+Landing. `is_open` says whether one tile is free. A brick and a locked door are closed. A spike and a pit are open, so a later check can see that I touched them. `PlayScene.update` looks under my feet before the sideways step. If that tile is solid and I pressed jump, my upward speed becomes 3. Gravity walks me one tile at a time and stops on the first closed tile. That stop is standing.
+
+## 7. Which parts still require additional study?
+
+Two edges I found by reading, not by dying to them. A horizontal move checks the tile I land on, not every tile I cross, so a long step could skip a spike. `int()` cuts toward zero, so negative coordinates are not a mirror of the positive side. I am also less sure about the browser loop. The same Python runs there, but the keys are a set in JavaScript and the picture is rebuilt on a timer. A tap shorter than a slow frame never arrives.
+
+## 8. What are the advantages of vibe coding for a beginning programmer?
+
+I got three levels moving while I was still learning how high a jump goes. I could describe a bad landing in one sentence and have a change the same hour.
+
+## 9. What are the risks of relying too heavily on AI-generated code?
+
+A tidy explanation can be about the wrong problem. Cursor once put a low ceiling over the pit. `is_open` was right to call those bricks solid, the ground route died, and a search of the level never finished. If I had only read the function, I would have said collision worked. The level was still impossible.
+
+## 10. If you redesigned the game, what would you change?
+
+I would draw the three levels on paper before I asked for any bricks, and I would leave the first level boring until jump and move felt right. I would also put the illustrated character in the page I actually play, instead of designing him on a canvas and finding out later that the running game was still an `@`.

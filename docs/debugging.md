@@ -56,11 +56,22 @@ While the shield is held, or during that one second, open tiles beside the playe
 
 ## Level layout
 
-Each level has a ground route and an upper route of separate platforms. The upper route is brick on tile row 6. The player stands at world y 5, which has enough headroom to jump. The gaps are the jumps.
+Levels 2 and 3 still use separate platforms on tile row 6. The player stands at world y 5, which has enough headroom to jump. The gaps are the jumps. The meadow is different on purpose. Its upper route is two steps, not three matching bars.
 
-A solid row-3 bridge was the first upper route. It does not clip a ground jump, because its brick is at world y 7, above the apex. It also cannot be a platforming path. Standing on it is world y 8, the map top is y 10, and a jump of 3 hits the ceiling and falls through a gap before the next island.
+A running jump moves sideways before it rises. The first new column is entered at the old height, so a brick in that column is hit from the side. The brick has to start on a later column, where the jump is already above it and coming down. A jump from y 0 reaches about y 6 and lands about seven tiles later. A brick you are still rising through cannot be landed on.
 
-Low bridges over the pits were worse. A solid in world y 1 through 6 above a pit's takeoff blocks the ground jump. A breadth-first search of that layout did not finish, because the ground route was closed and the upper route was not actually reachable. Do not put ceilings over pit columns.
+The meadow used to be three bars on row 6: columns 20–25, 29–33, and 36–37. That shape was the same idea copied three times. Replacing it took four tries:
+
+- A step in columns 22–25, right after the key ledge. The jump from the end of the ledge is already at y 5 on the first frame, flies over that step, and falls in the pit.
+- A longer step covering the pit, including the takeoff column. The sideways move entered that column at y 0, then the rise hit the underside. The lip jump died.
+- A step that ended on the tile where the jump landed. The next walk fell onto the spike in column 34.
+- The one that stayed. The low step is row 8, columns 27–30. You arrive above it. The higher bridge is row 6, columns 32–37, long enough to walk, and the drop past column 37 is the door rather than the spikes.
+
+From the key ledge, walk to its end, jump, land on the low step, jump again, and you are on the bridge at y 5. From the ground, jump on the last tile before the pit. You land on that same low step. Walking off its right end puts you on the ground in front of the spikes, which you still have to jump.
+
+A solid row-3 bridge was an earlier upper route, before this stair. It does not clip a ground jump, because its brick is at world y 7, above the apex. It also cannot be a platforming path. Standing on it is world y 8, the map top is y 10, and a jump of 3 hits the ceiling and falls through a gap before the next island.
+
+Low ceilings over the pit columns are worse. A solid in world y 1 through 6 above a pit's takeoff blocks the ground jump. A breadth-first search of that layout did not finish, because the ground route was closed and the upper route was not actually reachable. Do not put ceilings over pit columns.
 
 Jumping up through a brick does not land on it. The next platform has to sit under the falling part of the arc, and the jump has to start from the second-to-last tile if takeoff were still checked after the step. With the current takeoff rule, the last tile works when jump and move are the same frame.
 

@@ -12,7 +12,7 @@ def test_start_screen_fills_the_play_window() -> None:
 
     frame = renderer.frames[0]
     assert len(frame) == 12
-    assert frame[2] == "       ASHGATE       "
+    assert frame[2] == "     Daemon soul     "
     assert frame[4] == "     three gates     "
     assert frame[6] == "       meadow        "
     assert frame[7] == "        kiln         "

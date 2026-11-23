@@ -164,7 +164,7 @@ def _draw_bubble(cells: list[str], player_x: int) -> None:
 
 
 def _level_one() -> tuple[str, ...]:
-    """A beginner level: the ground pit, or the platforms above it."""
+    """Meadow. A low step over the pit, then a higher bridge over the spikes."""
     width = 40
     height = 12
     rows = [["." for _ in range(width)] for _ in range(height)]
@@ -177,9 +177,10 @@ def _level_one() -> tuple[str, ...]:
     rows[10][5] = "o"
     for x in range(15, 22):
         rows[9][x] = "#"
-    for span in ((20, 26), (29, 34), (36, 38)):
-        for x in range(*span):
-            rows[6][x] = "#"
+    for x in range(27, 31):
+        rows[8][x] = "#"
+    for x in range(32, 38):
+        rows[6][x] = "#"
     rows[8][17] = "K"
     rows[8][19] = "o"
     rows[5][18] = "o"

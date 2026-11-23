@@ -308,7 +308,7 @@ def test_spikes_send_the_player_back() -> None:
 
 def test_each_level_can_be_crossed_on_the_high_road() -> None:
     routes = {
-        1: ((15, 2), ["RU"] + ["R"] * 6 + ["RU"] + ["R"] * 6),
+        1: ((15, 2), ["R"] * 4 + ["RU"] + ["R"] * 6 + ["RU"] + ["R"] * 6),
         2: ((21, 4), ["RU"] + ["R"] * 8 + ["RU"] + ["R"] * 6),
         3: ((26, 4), ["RU"] + ["R"] * 8 + ["RU"] + ["R"] * 6),
     }

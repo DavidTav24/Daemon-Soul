@@ -38,7 +38,7 @@ class StartScene:
     def render(self, renderer: FrameRenderer) -> None:
         """Draw the title in the same window as a level."""
         lines = [" " * _WIDTH] * _HEIGHT
-        lines[2] = _center("ASHGATE")
+        lines[2] = _center("Daemon soul")
         lines[4] = _center("three gates")
         lines[6] = _center("meadow")
         lines[7] = _center("kiln")

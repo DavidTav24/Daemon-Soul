@@ -67,7 +67,7 @@ class GameSession:
             return f"THE GATE IS SHUT  SCORE {self.game_over.score:06d}"
         if self.mode == "win":
             return f"YOU WIN  SCORE {self.score:06d}"
-        return "ASHGATE  ENTER TO BEGIN"
+        return "Daemon soul  enter to begin"
 
     def render(self, renderer: FrameRenderer) -> None:
         """Draw the current screen into ``renderer``."""
@@ -79,7 +79,7 @@ class GameSession:
             self.game_over.render(renderer)
         elif self.mode == "win":
             lines = [" " * _WIDTH] * _HEIGHT
-            lines[2] = _center("ASHGATE")
+            lines[2] = _center("Daemon soul")
             lines[4] = _center("YOU WIN")
             lines[6] = _center(f"SCORE {self.score:06d}")
             lines[8] = _center("the last gate")

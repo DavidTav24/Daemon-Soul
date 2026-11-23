@@ -1,6 +1,6 @@
-# Ashgate
+# Daemon soul
 
-Ashgate is a three-level side-view platformer. You play `@`. Each gate has a key, a locked door, coins, pits, and spikes. The kiln, the second gate, also has a shield. The same Python rules run in a terminal and, through this repository's GitHub Pages site, in the browser.
+Daemon soul is a three-level side-view platformer. In the terminal you play `@`. In the browser the same level is the illustrated map: a grassland, a desert, and a beach at night, with the drawn player, bricks, coins, key, door, spikes, pits, and robots. Each gate has a key, a locked door, coins, pits, and spikes. The kiln, the second gate, also has a shield. The same Python rules run in a terminal and, through this repository's GitHub Pages site, in the browser.
 
 ## Install the software
 
@@ -76,7 +76,7 @@ The `+` on the kiln absorbs one hit. You stay where you are and flash for about 
 
 There are three gates. The status line names the one you are in.
 
-1. **Meadow.** The beginner gate. Cross the pit on the ground, or jump the platforms above it.
+1. **Meadow.** Jump from the lip of the pit onto the low step, or from the key ledge. The higher bridge crosses the spikes. Drop off its end onto the door.
 2. **Kiln.** The shield is just to the right of the start. The ground has pits, spikes, and an enemy. The upper platforms are the other route.
 3. **Night.** Two enemies, a wider pit, and a short spike jump. The upper platforms lead toward the door.
 
@@ -84,11 +84,17 @@ Clearing a gate keeps your score and lives and opens the next one. Clearing the 
 
 ## What Python does
 
-Python is the game, not a side script. `PlayScene.update` moves the player one frame: walk, jump, gravity, hazards, enemies, then pickups. `Environment.is_open` decides which tiles block that move. `GameSession` switches among the title, the three gates, game over, and the win screen. In the terminal, `run_game` reads the keyboard. On the Pages site, the page sends the same commands into `GameSession.step` and prints the frame Python returns.
+Python is the game, not a side script. `PlayScene.update` moves the player one frame: walk, jump, gravity, hazards, enemies, then pickups. `Environment.is_open` decides which tiles block that move. `GameSession` switches among the title, the three gates, game over, and the win screen. In the terminal, `run_game` reads the keyboard and draws the level as text. On the Pages site, the page sends the same commands into `GameSession.step`. Python returns the mode, the level, which way the player faces, and the 21 by 12 grid. The page turns those characters into the drawn map. It does not treat the grid as HTML.
 
 ## AI tools
 
-The game was built in Cursor with Grok. The assistant wrote the Python, the tests, and this site from play notes. The collision rules, the pit, the shield, and the level layouts were changed after playing them. Notes from that work are in [docs/debugging.md](docs/debugging.md). The collision writeup is [docs/ai-challenge.md](docs/ai-challenge.md). The Part 1 reflection is [docs/reflection.md](docs/reflection.md).
+The game was built in Cursor with Grok. The assistant wrote the Python, the tests, and this site from play notes. The collision rules, the pit, the shield, the meadow steps, and the drawn character were changed after playing them.
+
+- [Vibe coding journal](docs/vibe-journal.md), six sessions reconstructed from the chat and the commits
+- [Debugging record](docs/debugging.md)
+- [Collision writeup](docs/ai-challenge.md)
+- [Final reflection](docs/reflection.md), the ten handout questions
+- [All three in one page](docs/course-writeup.md)
 
 The Part 1 snapshot, taken before the security changes, is the git branch `part1-baseline`. A folder copy is `/Users/davidtavares/Projects/ashgate-part1-backup`.
 
@@ -103,4 +109,4 @@ Part 2 reviewed this same game before changing it. The notes are:
 - [Review journal](docs/security/journal.md)
 - [Security reflection](docs/security/reflection.md)
 
-The page escapes game text before inserting it, ignores unknown command names, hides raw exception text, and pins the Pyodide loader with a hash and a Content-Security-Policy. There is no server, database, cookie, or secret. pytest is a test tool only. Its known advisory cannot be patched on Python 3.9, and that limit is written down in [requirements.txt](requirements.txt).
+The illustrated page builds each tile with the DOM. It does not assign the map to `innerHTML`. Unknown command names are ignored. A load or update error stays a generic sentence. The Pyodide loader is pinned with a hash and a Content-Security-Policy. There is no server, database, cookie, or secret. pytest is a test tool only. Its known advisory cannot be patched on Python 3.9, and that limit is written down in [requirements.txt](requirements.txt).

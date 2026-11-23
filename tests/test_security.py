@@ -98,6 +98,7 @@ def test_the_page_does_not_print_exception_text_and_pins_the_loader() -> None:
     play = _PLAY.read_text()
 
     assert "error.message" not in play
+    assert "innerHTML" not in play
     assert "<script>" not in page
     assert "integrity=\"sha384-" in page
     assert "Content-Security-Policy" in page

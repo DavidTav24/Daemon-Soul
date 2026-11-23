@@ -1,4 +1,3 @@
-# Daemon soul
 
 # Daemon soul
 
